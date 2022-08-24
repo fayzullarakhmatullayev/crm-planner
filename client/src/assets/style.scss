@@ -1,0 +1,45 @@
+* {
+  box-sizing: border-box;
+}
+.app-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.app-content {
+  position: absolute;
+  left: 280px;
+  top: 54px;
+  width: calc(100% - 280px);
+  height: calc(100% - 54px);
+  padding: 1rem;
+  overflow-y: scroll;
+}
+.signup-position {
+  margin-top: 1rem;
+  display: flex;
+  small {
+    font-size: 12px;
+    margin-right: 15px;
+  }
+  .btn {
+    font-size: 12px;
+    padding: 3px 5px;
+    width: 150px;
+    line-height: 1;
+  }
+}
+.page {
+  min-height: 80vh;
+  .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+    .spinner-border {
+      width: 50px;
+      height: 50px;
+    }
+  }
+}
