@@ -14,7 +14,7 @@ const App = () => {
         </Route>
         <Route element={<MainLayout />}>
           <Route path="/" exact element={<Home />} />
-          <Route path="/users" exact element={<Users />} />
+          <Route path="/users" element={<Users />} />
         </Route>
       </Routes>
       <ToastContainer />

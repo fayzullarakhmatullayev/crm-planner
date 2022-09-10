@@ -11,17 +11,12 @@ export const SignUp = async (req, res, next) => {
     const token = jwt.sign({ id: newUser._id }, process.env.SECRET_KEY);
     await newUser.save();
     const { password, ...others } = newUser._doc;
-    res
-      .status(200)
-      .cookie("access_token", token, {
-        httpOnly: true,
-      })
-      .send({
-        message: "User has been created!",
-        success: true,
-        access_token: token,
-        user: others,
-      });
+    res.status(200).send({
+      message: "User has been created!",
+      success: true,
+      access_token: token,
+      user: others,
+    });
   } catch (err) {
     next(err);
   }
@@ -39,12 +34,7 @@ export const SignIn = async (req, res, next) => {
     const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY);
     const { password, ...others } = user._doc;
 
-    res
-      .status(200)
-      .cookie("access_token", token, {
-        httpOnly: true,
-      })
-      .json({ user: others, success: true, access_token: token });
+    res.status(200).json({ user: others, success: true, access_token: token });
   } catch (err) {
     next(err);
   }

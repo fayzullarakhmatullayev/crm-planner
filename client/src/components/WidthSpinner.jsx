@@ -1,7 +1,7 @@
 import React from "react";
 
-const WidthSpinner = ({ children, data = [] }) => {
-  return !data.length ? (
+const WidthSpinner = ({ children, data = [] }) =>
+  !data.length ? (
     <div className="spinner">
       <div className="spinner-border text-primary" role="status">
         <span className="visually-hidden">Loading...</span>
@@ -10,6 +10,5 @@ const WidthSpinner = ({ children, data = [] }) => {
   ) : (
     <>{children}</>
   );
-};
 
 export default WidthSpinner;

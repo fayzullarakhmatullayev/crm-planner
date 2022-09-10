@@ -1,9 +1,9 @@
-import { Button, Nav, Container, Navbar, NavDropdown } from "react-bootstrap";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 import useToast from "../hooks/useToast";
+import { BoxArrowRight } from "react-bootstrap-icons";
 
 const TheNavbar = () => {
   const dispatch = useDispatch();
@@ -14,30 +14,51 @@ const TheNavbar = () => {
     navigate("/signin", { replace: true });
   };
   return (
-    <Navbar bg="light" expand="lg" style={{ marginLeft: 280 }}>
-      <Container fluid>
+    <nav
+      className="navbar navbar-expand-lg bg-light py-2"
+      style={{ marginLeft: 280, borderBottom: "1px solid #ccc", height: 70 }}
+    >
+      <div className="container-fluid">
         <div className="d-flex align-items-center w-100 justify-content-end">
           <div className="d-flex align-items-center">
-            <NavDropdown
-              title="Dropdown"
-              id="basic-nav-dropdown"
-              className="me-4"
+            <div className="nav-item dropdown me-5">
+              <a
+                className="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Dropdown link
+              </a>
+              <ul className="dropdown-menu">
+                <li>
+                  <a className="dropdown-item" href="#">
+                    Action
+                  </a>
+                </li>
+                <li>
+                  <a className="dropdown-item" href="#">
+                    Another action
+                  </a>
+                </li>
+                <li>
+                  <a className="dropdown-item" href="#">
+                    Something else here
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <button
+              className="btn btn-primary d-flex align-items-center me-4"
+              onClick={logoutHandler}
             >
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
-            </NavDropdown>
-            <Button onClick={logoutHandler}>Logout</Button>
+              Logout <BoxArrowRight className="ms-2 " />
+            </button>
           </div>
         </div>
-      </Container>
-    </Navbar>
+      </div>
+    </nav>
   );
 };
 
