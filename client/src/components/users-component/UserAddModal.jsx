@@ -30,7 +30,6 @@ const UserAddModal = ({ fetchAllUsers, isModalOpen, setIsModalOpen }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((res) => ({ ...res, [name]: value }));
-    console.log(user);
   };
 
   const handleTogglePosition = () => {
@@ -105,7 +104,7 @@ const UserAddModal = ({ fetchAllUsers, isModalOpen, setIsModalOpen }) => {
                         id="position"
                         name="position"
                         value={user.position}
-                        onChange={handleChange}
+                        onInput={handleChange}
                       />
                     </>
                   ) : (
@@ -144,7 +143,7 @@ const UserAddModal = ({ fetchAllUsers, isModalOpen, setIsModalOpen }) => {
                   id="phone"
                   name="phone"
                   value={user.phone}
-                  onChange={handleChange}
+                  onInput={handleChange}
                 />
               </div>
               <div className="mb-3">
@@ -158,7 +157,7 @@ const UserAddModal = ({ fetchAllUsers, isModalOpen, setIsModalOpen }) => {
                   name="email"
                   aria-describedby="emailHelp"
                   value={user.email}
-                  onChange={handleChange}
+                  onInput={handleChange}
                 />
               </div>
               <div className="mb-3">
@@ -171,7 +170,7 @@ const UserAddModal = ({ fetchAllUsers, isModalOpen, setIsModalOpen }) => {
                   id="password"
                   name="password"
                   value={user.password}
-                  onChange={handleChange}
+                  onInput={handleChange}
                 />
               </div>
             </div>

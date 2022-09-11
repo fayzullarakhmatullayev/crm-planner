@@ -12,6 +12,7 @@ import UserEditModal from "../../components/users-component/UserEditModal";
 const Users = () => {
   const headerAccessToken = useHeaderAccessToken();
   const [users, setUsers] = useState([]);
+  const [userId, setUserId] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -40,6 +41,11 @@ const Users = () => {
     } catch (error) {
       useToast(error.response.data.message);
     }
+  };
+
+  const editClickHandler = async (id) => {
+    setIsEditModalOpen(true);
+    setUserId(id);
   };
 
   useEffect(() => {
@@ -97,7 +103,7 @@ const Users = () => {
                 <td>
                   <button
                     className="btn btn-primary mx-1"
-                    onClick={() => setIsEditModalOpen(true)}
+                    onClick={() => editClickHandler(user._id)}
                   >
                     <Pencil />
                   </button>
@@ -121,8 +127,11 @@ const Users = () => {
       />
       {/* Modal for edit user */}
       <UserEditModal
+        fetchAllUsers={fetchAllUsers}
         isModalOpen={isEditModalOpen}
         setIsModalOpen={setIsEditModalOpen}
+        userId={userId}
+        setUserId={setUserId}
       />
     </div>
   );
