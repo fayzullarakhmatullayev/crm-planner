@@ -1,19 +1,26 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import useToast from "../../hooks/useToast";
+import Modal from "../modal/Modal";
+import { Keyboard, HandIndexThumb } from "react-bootstrap-icons";
 
-const UserAddModal = () => {
+const UserAddModal = ({ fetchAllUsers, isModalOpen, setIsModalOpen }) => {
   const [togglePosition, setTogglePosition] = useState(false);
-  const [userInfo, setUserInfo] = useState({
+  const { access_token } = useSelector((state) => state.user);
+
+  const [user, setUser] = useState({
     name: "",
-    position: "No position",
+    position: "Software engineer",
     phone: "",
     email: "",
     password: "",
   });
 
   const clearValues = () => {
-    setUserInfo({
+    setUser({
       name: "",
-      position: "No position",
+      position: "Software engineer",
       phone: "",
       email: "",
       password: "",
@@ -22,12 +29,13 @@ const UserAddModal = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserInfo((res) => ({ ...res, [name]: value }));
+    setUser((res) => ({ ...res, [name]: value }));
+    console.log(user);
   };
 
   const handleTogglePosition = () => {
     setTogglePosition((prev) => !prev);
-    setUserInfo((prev) => ({
+    setUser((prev) => ({
       ...prev,
       position: "",
     }));
@@ -35,27 +43,24 @@ const UserAddModal = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(userInfo);
-
-    // dispatch(loginStart());
-    // try {
-    //   const res = await axios.post("/auth/signup", userInfo);
-    //   useToast(res.data.message, true);
-    //   dispatch(loginSuccess(res.data));
-    // } catch (error) {
-    //   useToast(error.message);
-    //   dispatch(loginFailure());
-    // }
+    setIsModalOpen(false);
+    try {
+      const res = await axios("/users/create-user", {
+        method: "POST",
+        headers: {
+          access_token,
+        },
+        data: user,
+      });
+      useToast(res.data.message, true);
+      await fetchAllUsers();
+    } catch (error) {
+      useToast(error.message);
+    }
     clearValues();
   };
   return (
-    <div
-      className="modal fade"
-      id="userAddModal"
-      tabIndex="-1"
-      aria-labelledby="userAddLabel"
-      aria-hidden="true"
-    >
+    <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
@@ -65,8 +70,7 @@ const UserAddModal = () => {
             <button
               type="button"
               className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
+              onClick={() => setIsModalOpen(false)}
             ></button>
           </div>
 
@@ -81,56 +85,54 @@ const UserAddModal = () => {
                   className="form-control"
                   id="name"
                   name="name"
-                  value={userInfo.name}
-                  onChange={handleChange}
+                  value={user.name}
+                  onInput={handleChange}
                 />
               </div>
+
               <div className="mb-3">
                 <label htmlFor="position" className="form-label">
-                  Choose user postion
+                  {togglePosition
+                    ? "Type your position"
+                    : "Select your position"}
                 </label>
-                <select
-                  id="position"
-                  name={!togglePosition ? "position" : ""}
-                  className="form-select"
-                  onChange={handleChange}
-                  disabled={togglePosition}
-                >
-                  <option value="Software engineer">Software engineer</option>
-                  <option value="HR">HR</option>
-                  <option value="Sales manager">Sales manager</option>
-                </select>
-                <div className="signup-position">
-                  <small className="text-danger fs-md">
-                    Couldn't find the right position? Click the button and type
-                    user postion.
-                  </small>
+                <div className="d-flex">
+                  {togglePosition ? (
+                    <>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="position"
+                        name="position"
+                        value={user.position}
+                        onChange={handleChange}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <select
+                        id="position"
+                        name="position"
+                        className="form-select"
+                        onChange={handleChange}
+                      >
+                        <option value="Software engineer">
+                          Software engineer
+                        </option>
+                        <option value="HR">HR</option>
+                        <option value="Sales manager">Sales manager</option>
+                      </select>
+                    </>
+                  )}
                   <button
-                    className={`btn ${
-                      togglePosition ? "btn-danger" : "btn-primary"
-                    }`}
+                    className="btn ms-2 btn-primary"
                     onClick={handleTogglePosition}
                     type="button"
                   >
-                    {togglePosition ? "Back to select" : "Type user postion"}
+                    {togglePosition ? <HandIndexThumb /> : <Keyboard />}
                   </button>
                 </div>
               </div>
-              {togglePosition && (
-                <div className="mb-3">
-                  <label htmlFor="position" className="form-label">
-                    User postion
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="position"
-                    name="position"
-                    value={userInfo.position}
-                    onChange={handleChange}
-                  />
-                </div>
-              )}
 
               <div className="mb-3">
                 <label htmlFor="phone" className="form-label">
@@ -141,7 +143,7 @@ const UserAddModal = () => {
                   className="form-control"
                   id="phone"
                   name="phone"
-                  value={userInfo.phone}
+                  value={user.phone}
                   onChange={handleChange}
                 />
               </div>
@@ -155,7 +157,7 @@ const UserAddModal = () => {
                   id="email"
                   name="email"
                   aria-describedby="emailHelp"
-                  value={userInfo.email}
+                  value={user.email}
                   onChange={handleChange}
                 />
               </div>
@@ -168,7 +170,7 @@ const UserAddModal = () => {
                   className="form-control"
                   id="password"
                   name="password"
-                  value={userInfo.password}
+                  value={user.password}
                   onChange={handleChange}
                 />
               </div>
@@ -176,23 +178,19 @@ const UserAddModal = () => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
+                className="btn btn-secondary me-2"
+                onClick={() => setIsModalOpen(false)}
               >
                 Close
               </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-              >
+              <button type="submit" className="btn btn-primary">
                 Submit
               </button>
             </div>
           </form>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

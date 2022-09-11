@@ -1,4 +1,7 @@
+import { useState, useTransition } from "react";
+
 const Home = () => {
+  const [isPending, startTransition] = useTransition();
   return (
     <div>
       <h1>Home</h1>

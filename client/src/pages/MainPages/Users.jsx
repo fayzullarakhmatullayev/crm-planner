@@ -6,13 +6,19 @@ import WidthSpinner from "../../components/WidthSpinner";
 import { useHeaderAccessToken } from "../../hooks/useHeaderAccessToken";
 import { PersonPlusFill, Pencil, Trash } from "react-bootstrap-icons";
 import UserAddModal from "../../components/users-component/UserAddModal";
+import { useSelector } from "react-redux";
+import UserEditModal from "../../components/users-component/UserEditModal";
 
 const Users = () => {
   const headerAccessToken = useHeaderAccessToken();
   const [users, setUsers] = useState([]);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const { access_token } = useSelector((state) => state.user);
   const fetchAllUsers = async () => {
     try {
-      const res = await axios.get("/users/getusers", headerAccessToken);
+      const res = await axios.get("/users/get-users", headerAccessToken);
       if (res.status === 200) {
         setUsers(res.data);
       }
@@ -20,9 +26,25 @@ const Users = () => {
       useToast(error.message);
     }
   };
+
+  const deleteUser = async (id) => {
+    try {
+      const res = await axios(`/users/delete-user/${id}`, {
+        method: "DELETE",
+        headers: {
+          access_token,
+        },
+      });
+      useToast(res.data.message, true);
+      await fetchAllUsers();
+    } catch (error) {
+      useToast(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
     fetchAllUsers();
-  }, [users]);
+  }, []);
 
   return (
     <div className="page">
@@ -31,8 +53,7 @@ const Users = () => {
           <h1>Users</h1>{" "}
           <button
             className="btn btn-primary d-flex align-items-center"
-            data-bs-toggle="modal"
-            data-bs-target="#userAddModal"
+            onClick={() => setIsAddModalOpen(true)}
           >
             Add User <PersonPlusFill style={{ marginLeft: 10, fontSize: 18 }} />
           </button>
@@ -40,11 +61,11 @@ const Users = () => {
         <table className="table align-middle mb-0 bg-white">
           <thead className="bg-light">
             <tr style={{ backgroundColor: "#e9ecef" }}>
-              <th className="py-3 px-4">Name</th>
-              <th className="py-3 px-4">Position</th>
-              <th className="py-3 px-4">Email</th>
-              <th className="py-3 px-4">Phone Number</th>
-              <th className="py-3 px-4">Actions</th>
+              <th>Name</th>
+              <th>Position</th>
+              <th>Email</th>
+              <th>Phone Number</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -74,10 +95,16 @@ const Users = () => {
                   </p>
                 </td>
                 <td>
-                  <button className="btn btn-primary mx-1">
+                  <button
+                    className="btn btn-primary mx-1"
+                    onClick={() => setIsEditModalOpen(true)}
+                  >
                     <Pencil />
                   </button>
-                  <button className="btn btn-danger mx-1">
+                  <button
+                    className="btn btn-danger mx-1"
+                    onClick={() => deleteUser(user._id)}
+                  >
                     <Trash />
                   </button>
                 </td>
@@ -87,7 +114,16 @@ const Users = () => {
         </table>
       </WidthSpinner>
       {/* Modal for add a new user */}
-      <UserAddModal />
+      <UserAddModal
+        fetchAllUsers={fetchAllUsers}
+        isModalOpen={isAddModalOpen}
+        setIsModalOpen={setIsAddModalOpen}
+      />
+      {/* Modal for edit user */}
+      <UserEditModal
+        isModalOpen={isEditModalOpen}
+        setIsModalOpen={setIsEditModalOpen}
+      />
     </div>
   );
 };

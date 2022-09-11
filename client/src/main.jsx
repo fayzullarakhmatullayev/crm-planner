@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { persistor, store } from "./redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import "react-toastify/dist/ReactToastify.css";
-import "./assets/style.scss";
+import "./assets/scss/style.scss";
 import "./axios.js";
 import App from "./App";
 
